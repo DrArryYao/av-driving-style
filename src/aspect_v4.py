@@ -43,8 +43,8 @@ def fig2():
     strata = [(0.05,0.15),(0.15,0.3),(0.3,0.6),(0.6,3.0)]
     mids = [np.mean(s) for s in strata]
 
-    fig = plt.figure(figsize=(7.1, 6.0))
-    gs = gridspec.GridSpec(2, 3, hspace=0.55, wspace=0.50)
+    fig = plt.figure(figsize=(7.1, 6.5))
+    gs = gridspec.GridSpec(2, 3, hspace=0.65, wspace=0.55)
 
     # a: gain vs disturbance (square)
     ax1 = fig.add_subplot(gs[0, 0])
@@ -155,7 +155,7 @@ def fig3():
     energy = pd.read_csv(os.path.join(HERE,"sim_per_vehicle_energy.csv"))
     vehicles = [5,15,25,35,45,55]
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 6.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 6.5))
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
     # a: scatter
@@ -229,7 +229,7 @@ def fig3():
     ax6.set_ylabel("kWh/100km")
     SQ(ax6); L(ax6,"f")
 
-    fig.subplots_adjust(hspace=0.55, wspace=0.50)
+    fig.subplots_adjust(hspace=0.65, wspace=0.55)
     fig.savefig(os.path.join(OUT,"fig4_sim.pdf")); plt.close(fig)
 
 
@@ -258,8 +258,8 @@ def fig4():
         return out
     med_v = med_ci("vsp_km"); med_e = med_ci("e_km")
 
-    fig = plt.figure(figsize=(7.1, 6.0))
-    gs = gridspec.GridSpec(2, 3, hspace=0.55, wspace=0.50)
+    fig = plt.figure(figsize=(7.1, 6.5))
+    gs = gridspec.GridSpec(2, 3, hspace=0.65, wspace=0.55)
 
     # a: heatmap (square)
     ax1 = fig.add_subplot(gs[0, 0])
