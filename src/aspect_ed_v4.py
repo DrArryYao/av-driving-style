@@ -26,8 +26,8 @@ plt.rcParams.update({
     "legend.fontsize": 6, "axes.labelsize": 7.5, "xtick.labelsize": 6.5,
     "ytick.labelsize": 6.5, "lines.linewidth": 1.2,
 })
-L = lambda ax, s: ax.text(-0.18, 1.1, s, transform=ax.transAxes,
-                          fontsize=10, fontweight="bold", va="top", ha="left")
+L = lambda ax, s: ax.text(-0.22, 1.12, s, transform=ax.transAxes,
+                          fontsize=9, fontweight="bold", va="top", ha="left")
 SQ = lambda ax: ax.set_box_aspect(1)
 WIDE = lambda ax: ax.set_box_aspect(0.5)
 

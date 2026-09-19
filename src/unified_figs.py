@@ -29,7 +29,7 @@ plt.rcParams.update({
     "ytick.labelsize": 6, "lines.linewidth": 1.2,
     "axes.titlesize": 6.5,
 })
-L = lambda ax, s: ax.text(-0.15, 1.06, s, transform=ax.transAxes,
+L = lambda ax, s: ax.text(-0.22, 1.12, s, transform=ax.transAxes,
                           fontsize=9, fontweight="bold", va="top", ha="left")
 
 
