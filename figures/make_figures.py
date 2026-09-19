@@ -14,15 +14,23 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 OUT = r"${OUT_DIR}"
-AVC, HC, NC = "#c0392b", "#2471a3", "#7d3c98"  # AV red, human blue, NGSIM purple
+# Okabe-Ito colour-blind-safe palette
+AVC, HC, NC = "#D55E00", "#0072B2", "#009E73"  # AV vermillion, human blue, NGSIM green
 plt.rcParams.update({
-    "font.size": 9, "axes.linewidth": 0.8, "figure.dpi": 150,
+    "font.size": 8.5, "axes.linewidth": 0.7, "figure.dpi": 200,
     "savefig.bbox": "tight", "legend.frameon": False,
     "font.family": "Palatino Linotype",
     "mathtext.fontset": "custom",
     "mathtext.rm": "Palatino Linotype",
     "mathtext.it": "Palatino Linotype:italic",
     "mathtext.bf": "Palatino Linotype:bold",
+    "axes.spines.top": False, "axes.spines.right": False,
+    "axes.grid": True, "grid.color": "#d5d8dc",
+    "grid.linestyle": ":", "grid.linewidth": 0.5, "grid.alpha": 0.8,
+    "xtick.direction": "out", "ytick.direction": "out",
+    "xtick.major.size": 2.5, "ytick.major.size": 2.5,
+    "legend.fontsize": 6.5, "axes.labelsize": 8, "xtick.labelsize": 7,
+    "ytick.labelsize": 7, "lines.linewidth": 1.3,
 })
 
 # ---------------- fig 1 ----------------
@@ -137,8 +145,8 @@ def fig3():
                                    "p01_pairs.csv"))
     s = nm[(nm.mean_speed > 10) & (nm.l_fluct >= 0.3)]
     groups = [((0, 0), "raw", "human|\nhuman", HC),
-              ((0, 1), "raw", "human|AV\n(raw)", "#c39bd3"),
-              ((0, 1), "nm", "human|AV\n(equalized)", "#8e44ad"),
+              ((0, 1), "raw", "human|AV\n(raw)", "#9db8d2"),
+              ((0, 1), "nm", "human|AV\n(equalized)", "#1f4e79"),
               ((1, 0), "raw", "AV|\nhuman", AVC)]
     for i, ((f, l), mode, lab, c) in enumerate(groups):
         col = "g_raw" if mode == "raw" else "g_nm"
@@ -194,7 +202,7 @@ def fig5():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.1, 2.6),
                                    gridspec_kw={"width_ratios": [1, 1]})
     for m, lab, c in [("p95_abs_jerk", "95th p. |jerk|", "#c0392b"),
-                      ("frac_aggr", "aggressive share", "#e67e22")]:
+                      ("frac_aggr", "aggressive share", "#E69F00")]:
         xs, mid, lo, hi = [], [], [], []
         for i, cat in enumerate(["low (<10 veh)", "mid (10–16)", "high (>16)"]):
             sub = p[p.dens == cat]
@@ -220,8 +228,8 @@ def fig5():
     nm = pd.read_csv(nm_path)
     s = nm[(nm.mean_speed > 10) & (nm.l_fluct >= 0.3)]
     groups = [((0, 0), "raw", "human|human", HC),
-              ((0, 1), "raw", "human|AV\n(raw)", "#c39bd3"),
-              ((0, 1), "nm", "human|AV\n(equalized)", "#8e44ad"),
+              ((0, 1), "raw", "human|AV\n(raw)", "#9db8d2"),
+              ((0, 1), "nm", "human|AV\n(equalized)", "#1f4e79"),
               ((1, 0), "raw", "AV|human", AVC)]
     for i, ((f, l), mode, lab, c) in enumerate(groups):
         col = "g_raw" if mode == "raw" else "g_nm"
@@ -288,8 +296,8 @@ def fig6():
     ax1.legend(fontsize=7)
 
     w = 0.35
-    for i, (col, lab, c) in enumerate([(med_v, "VSP proxy", "#95a5a6"),
-                                       (med_e, "wheel-level model", "#2c3e50")]):
+    for i, (col, lab, c) in enumerate([(med_v, "VSP proxy", "#8899aa"),
+                                       (med_e, "wheel-level model", "#444444")]):
         rel = [100 * (col[(r, 1)][0] / col[(r, 0)][0] - 1) for r in regs]
         ax2.bar(x + (i - 0.5) * w, rel, width=w, color=c, label=lab)
     ax2.axhline(0, color="k", lw=0.7)
@@ -319,7 +327,7 @@ def ed1():
     """Estimator-bias calibration (null simulations)."""
     df = pd.read_csv("p02_gain_bias.csv")
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.1, 2.4))
-    for noise, c in [(0.0, "#7f8c8d"), (0.05, "#2980b9"), (0.15, "#8e44ad")]:
+    for noise, c in [(0.0, "#999999"), (0.05, "#56B4E9"), (0.15, "#1f4e79")]:
         s = df[(df.noise == noise) & (df.L == 150) & (df.g_true == 1.0)]
         ax1.plot(s.sigma_d, s.bias_ratio, "o-", color=c, ms=3.5, lw=1.1,
                  label=f"noise={noise}")
@@ -363,7 +371,7 @@ def ed3():
     for n_av, lab in [(12, "20%"), (30, "50%"), (60, "100%")]:
         sub = g[g.n_av == n_av]
         sav = 100 * (1 - sub.e / base)
-        ax.scatter([lab] * len(sav), sav, color="#5d6d7e", s=12, alpha=0.6)
+        ax.scatter([lab] * len(sav), sav, color="#666666", s=12, alpha=0.6)
         ax.scatter([lab], [sav.median()], color=AVC, s=30, zorder=3)
     ax.set_xlabel("AV penetration", fontsize=7)
     ax.set_ylabel("energy saving (%)", fontsize=7)
