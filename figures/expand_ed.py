@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from matplotlib.lines import Line2D
 
-OUT = r"C:\Users\Arry\Desktop\NC\paper"
+OUT = r"${OUT_DIR}"
 AVC, HC, NC = "#D55E00", "#0072B2", "#009E73"
 plt.rcParams.update({
     "font.size": 8.5, "axes.linewidth": 0.9, "figure.dpi": 200,
@@ -278,10 +278,10 @@ def ed3():
 
 # ============ ED Fig 4: Perception validation, 6 panels (2x3) ============
 def ed4():
-    tk = pd.read_csv("E:/av_style_data/tracks_full.csv",
+    tk = pd.read_csv("${DATA_DIR}/tracks_full.csv",
                      usecols=["is_av","mean_speed","p95_abs_jerk","frac_aggr",
                               "mean_abs_accel"])
-    ng = pd.read_csv("E:/av_style_data/ngsim_tracks.csv",
+    ng = pd.read_csv("${DATA_DIR}/ngsim_tracks.csv",
                      usecols=["mean_speed","p95_abs_jerk","frac_aggr"])
     w_h = tk[(tk.is_av==0)&(tk.mean_speed>10)]
     w_a = tk[(tk.is_av==1)&(tk.mean_speed>10)]
