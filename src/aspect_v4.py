@@ -44,7 +44,7 @@ def fig2():
     mids = [np.mean(s) for s in strata]
 
     fig = plt.figure(figsize=(7.1, 6.5))
-    gs = gridspec.GridSpec(2, 3, hspace=0.45, wspace=0.65)
+    gs = gridspec.GridSpec(2, 3, hspace=0.15, wspace=0.55)
 
     # a: gain vs disturbance (square)
     ax1 = fig.add_subplot(gs[0, 0])
@@ -229,7 +229,7 @@ def fig3():
     ax6.set_ylabel("kWh/100km")
     SQ(ax6); L(ax6,"f")
 
-    fig.subplots_adjust(hspace=0.45, wspace=0.65)
+    fig.subplots_adjust(hspace=0.15, wspace=0.55)
     fig.savefig(os.path.join(OUT,"fig4_sim.pdf")); plt.close(fig)
 
 
@@ -259,7 +259,7 @@ def fig4():
     med_v = med_ci("vsp_km"); med_e = med_ci("e_km")
 
     fig = plt.figure(figsize=(7.1, 6.5))
-    gs = gridspec.GridSpec(2, 3, hspace=0.45, wspace=0.65)
+    gs = gridspec.GridSpec(2, 3, hspace=0.15, wspace=0.55)
 
     # a: heatmap (square)
     ax1 = fig.add_subplot(gs[0, 0])
