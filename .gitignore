@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+data/
+out/
+*.tfrecord
+*.zip
+*.csv
