@@ -168,7 +168,7 @@ def fig2():
     strata = [(0.05,0.15),(0.15,0.3),(0.3,0.6),(0.6,3.0)]
     mids = [np.mean(s) for s in strata]
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
@@ -275,7 +275,7 @@ def fig3():
     energy = pd.read_csv(os.path.join(HERE,"sim_per_vehicle_energy.csv"))
     vehicles = [5,15,25,35,45,55]
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
@@ -357,7 +357,7 @@ def fig4():
         return out
     med_v = med_ci("vsp_km"); med_e = med_ci("e_km")
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
@@ -459,7 +459,7 @@ def fig4():
 # ================================================================
 def fig5():
     sens = pd.read_csv(os.path.join(HERE,"p12_sensitivity.csv"))
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 

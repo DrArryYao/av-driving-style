@@ -35,8 +35,8 @@ WIDE = lambda ax: ax.set_box_aspect(0.5)
 def ed1():
     """a adaptive (wide heatmap), b/c/d/e square."""
     df = pd.read_csv(os.path.join(HERE, "p02_gain_bias.csv"))
-    fig = plt.figure(figsize=(7.1, 6.5))
-    gs = gridspec.GridSpec(2, 3, hspace=0.15, wspace=0.55)
+    fig = plt.figure(figsize=(7.1, 4.0))
+    gs = gridspec.GridSpec(2, 3, hspace=0.35, wspace=0.50)
 
     # a: wide heatmap
     ax1 = fig.add_subplot(gs[0, :2])
@@ -73,7 +73,7 @@ def ed1():
     ax2.axhline(1,color="k",lw=0.8,ls="--")
     ax2.set_xticks(range(1,5)); ax2.set_xticklabels(["0.5","0.8","1.0","1.2"],fontsize=6.5)
     ax2.set_xlabel("true gain"); ax2.set_ylabel("est./true")
-    SQ(ax2); L(ax2,"b")
+    L(ax2,"b")
 
     # c: area (square)
     ax3 = fig.add_subplot(gs[1, 0])
@@ -86,7 +86,7 @@ def ed1():
     ax3.set_xscale("log")
     ax3.set_xlabel("disturbance"); ax3.set_ylabel("IQR width")
     ax3.legend(fontsize=5.5)
-    SQ(ax3); L(ax3,"c")
+    L(ax3,"c")
 
     # d: dumbbell (square)
     ax4 = fig.add_subplot(gs[1, 1])
@@ -100,7 +100,7 @@ def ed1():
     ax4.set_xticks(range(3)); ax4.set_xticklabels(["0.5","1.0","1.2"],fontsize=6.5)
     ax4.set_xlabel("true gain"); ax4.set_ylabel("est./true")
     ax4.legend(fontsize=5.5)
-    SQ(ax4); L(ax4,"d")
+    L(ax4,"d")
 
     # e: hexbin (square)
     ax5 = fig.add_subplot(gs[1, 2])
@@ -109,7 +109,7 @@ def ed1():
     ax5.axhline(1,color="k",lw=0.8,ls="--")
     ax5.set_xscale("log")
     ax5.set_xlabel("disturbance"); ax5.set_ylabel("est./true")
-    SQ(ax5); L(ax5,"e")
+    L(ax5,"e")
 
     fig.savefig(os.path.join(OUT,"ed1_bias.pdf")); plt.close(fig)
 
@@ -121,7 +121,7 @@ def ed2():
     energy = pd.read_csv(os.path.join(HERE,"sim_per_vehicle_energy.csv"))
     vehicles = [5,15,25,35,45,55]
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 6.5))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
     # a: scatter
@@ -133,7 +133,7 @@ def ed2():
         ax1.plot(xs, np.polyval(z, xs), color=c, lw=1.5, ls="--")
     ax1.axhline(1,color="k",lw=0.8,ls="--")
     ax1.set_xlabel("position"); ax1.set_ylabel("chain gain")
-    SQ(ax1); L(ax1,"a")
+    L(ax1,"a")
 
     # b: heatmap 0%
     tr0 = traces[traces.pen==0]
@@ -146,7 +146,7 @@ def ed2():
     ax2.set_xlabel("time step"); ax2.set_ylabel("vehicle")
     ax2.set_title("0% AV", fontsize=6.5, fontweight="bold")
     fig.colorbar(im2, ax=ax2, fraction=0.04).ax.tick_params(labelsize=5.5)
-    SQ(ax2); L(ax2,"b")
+    L(ax2,"b")
 
     # c: heatmap 50%
     tr50 = traces[traces.pen==50]
@@ -160,7 +160,7 @@ def ed2():
     ax3.set_xlabel("time step"); ax3.set_ylabel("vehicle")
     ax3.set_title("50% AV", fontsize=6.5, fontweight="bold")
     fig.colorbar(im3, ax=ax3, fraction=0.04).ax.tick_params(labelsize=5.5)
-    SQ(ax3); L(ax3,"c")
+    L(ax3,"c")
 
     # d: dumbbell
     for pen,lab,c in [(0,"0%",HC),(50,"50%",AVC)]:
@@ -170,7 +170,7 @@ def ed2():
     ax4.set_xticklabels([str(v) for v in vehicles], fontsize=6)
     ax4.set_xlabel("position"); ax4.set_ylabel("speed s.d.")
     ax4.legend()
-    SQ(ax4); L(ax4,"d")
+    L(ax4,"d")
 
     # e: area (KDE)
     from scipy.stats import gaussian_kde
@@ -181,7 +181,7 @@ def ed2():
     ax5.fill_between(x, gaussian_kde(e50)(x), alpha=0.4, color=AVC, label="50%")
     ax5.set_xlabel("kWh/100km"); ax5.set_ylabel("density")
     ax5.legend()
-    SQ(ax5); L(ax5,"e")
+    L(ax5,"e")
 
     # f: bar
     for cfg,lab,c in [("human","human",HC),("av","AV",AVC)]:
@@ -191,9 +191,9 @@ def ed2():
     ax6.axhline(1,color="k",lw=0.8,ls="--")
     ax6.set_xlabel("position"); ax6.set_ylabel("cumulative gain")
     ax6.legend()
-    SQ(ax6); L(ax6,"f")
+    L(ax6,"f")
 
-    fig.subplots_adjust(hspace=0.15, wspace=0.55)
+    fig.subplots_adjust(hspace=0.35, wspace=0.50)
     fig.savefig(os.path.join(OUT,"ed2_controller.pdf")); plt.close(fig)
 
 
@@ -205,8 +205,8 @@ def ed3():
     sub50 = df[df.n_av==30]
     jcs = [1.0,1.5,2.0]; Ts = [1.1,1.4,1.7]
 
-    fig = plt.figure(figsize=(7.1, 6.5))
-    gs = gridspec.GridSpec(2, 3, hspace=0.15, wspace=0.55)
+    fig = plt.figure(figsize=(7.1, 4.0))
+    gs = gridspec.GridSpec(2, 3, hspace=0.35, wspace=0.50)
 
     # a: wide heatmap
     ax1 = fig.add_subplot(gs[0, :2])
@@ -240,7 +240,7 @@ def ed3():
         parts[k].set_color("k"); parts[k].set_linewidth(0.7)
     ax2.set_xticks([1,2,3]); ax2.set_xticklabels(labels, fontsize=6.5)
     ax2.set_ylabel("saving (%)")
-    SQ(ax2); L(ax2,"b")
+    L(ax2,"b")
 
     # c: dumbbell (square)
     ax3 = fig.add_subplot(gs[1, 0])
@@ -253,7 +253,7 @@ def ed3():
     ax3.set_yticks(range(3)); ax3.set_yticklabels([str(j) for j in jcs], fontsize=6.5)
     ax3.invert_yaxis()
     ax3.set_xlabel("saving at 50% (%)"); ax3.set_ylabel("jerk cap")
-    SQ(ax3); L(ax3,"c")
+    L(ax3,"c")
 
     # d: box (square)
     ax4 = fig.add_subplot(gs[1, 1])
@@ -264,13 +264,13 @@ def ed3():
         patch.set_facecolor("#E69F00"); patch.set_alpha(0.5)
     ax4.set_xticks([1,2,3]); ax4.set_xticklabels(["0","0.3","0.55"], fontsize=6.5)
     ax4.set_xlabel("anticipation"); ax4.set_ylabel("saving at 50% (%)")
-    SQ(ax4); L(ax4,"d")
+    L(ax4,"d")
 
     # e: hexbin (square)
     ax5 = fig.add_subplot(gs[1, 2])
     ax5.hexbin(100*df.n_av/60, df.sav, gridsize=15, cmap="YlOrRd", mincnt=5)
     ax5.set_xlabel("penetration (%)"); ax5.set_ylabel("saving (%)")
-    SQ(ax5); L(ax5,"e")
+    L(ax5,"e")
 
     fig.savefig(os.path.join(OUT,"ed3_sensitivity.pdf")); plt.close(fig)
 
@@ -286,8 +286,8 @@ def ed4():
     ng_h = ng[ng.mean_speed>10]
     colors = [(w_h,HC,"Human (perc.)"),(ng_h,NC,"NGSIM"),(w_a,AVC,"AV")]
 
-    fig = plt.figure(figsize=(7.1, 6.5))
-    gs = gridspec.GridSpec(2, 3, hspace=0.15, wspace=0.55)
+    fig = plt.figure(figsize=(7.1, 4.0))
+    gs = gridspec.GridSpec(2, 3, hspace=0.35, wspace=0.50)
 
     # a: wide heatmap
     ax1 = fig.add_subplot(gs[0, :2])
@@ -328,7 +328,7 @@ def ed4():
         ax2.text(-2, off, f"{lo}-{hi}", ha="right", va="center", fontsize=5)
     ax2.set_ylim(-0.3, len(bins)+0.2)
     ax2.set_yticks([]); ax2.set_xlabel("95th p. jerk")
-    SQ(ax2); L(ax2,"b")
+    L(ax2,"b")
 
     # c: scatter (square)
     ax3 = fig.add_subplot(gs[1, 0])
@@ -338,7 +338,7 @@ def ed4():
                    s=1.5, alpha=0.2, color=c, rasterized=True)
     ax3.set_xlabel("speed (m s$^{-1}$)"); ax3.set_ylabel("95th p. jerk")
     ax3.set_ylim(0,40)
-    SQ(ax3); L(ax3,"c")
+    L(ax3,"c")
 
     # d: dumbbell (square)
     ax4 = fig.add_subplot(gs[1, 1])
@@ -352,7 +352,7 @@ def ed4():
     ax4.set_yticklabels(["jerk\nP","jerk\nN","jerk\nAV","aggr\nP","aggr\nN"], fontsize=5)
     ax4.axvline(1,color=AVC,lw=0.8,ls="--")
     ax4.set_xlabel("normalized to P")
-    SQ(ax4); L(ax4,"d")
+    L(ax4,"d")
 
     # e: area ECDF (square)
     ax5 = fig.add_subplot(gs[1, 2])
@@ -363,7 +363,7 @@ def ed4():
     ax5.set_xlabel("aggressive share"); ax5.set_ylabel("ECDF")
     handles = [Line2D([0],[0],color=c,lw=1.2,label=l) for _,c,l in colors]
     ax5.legend(handles=handles, fontsize=5.5)
-    SQ(ax5); L(ax5,"e")
+    L(ax5,"e")
 
     fig.savefig(os.path.join(OUT,"ed4_validation.pdf")); plt.close(fig)
 
