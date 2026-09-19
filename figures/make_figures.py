@@ -18,6 +18,11 @@ AVC, HC, NC = "#c0392b", "#2471a3", "#7d3c98"  # AV red, human blue, NGSIM purpl
 plt.rcParams.update({
     "font.size": 9, "axes.linewidth": 0.8, "figure.dpi": 150,
     "savefig.bbox": "tight", "legend.frameon": False,
+    "font.family": "Palatino Linotype",
+    "mathtext.fontset": "custom",
+    "mathtext.rm": "Palatino Linotype",
+    "mathtext.it": "Palatino Linotype:italic",
+    "mathtext.bf": "Palatino Linotype:bold",
 })
 
 # ---------------- fig 1 ----------------
@@ -300,8 +305,94 @@ def fig6():
 
 if __name__ == "__main__":
     fig1(); print("fig1 done")
-    fig2(); print("fig2 done")
     fig3(); print("fig3 done")
     fig4(); print("fig4 done")
-    fig5(); print("fig5 done")
     fig6(); print("fig6 done")
+    ed1(); print("ed1 done")
+    ed2(); print("ed2 done")
+    ed3(); print("ed3 done")
+    ed4(); print("ed4 done")
+
+
+# ------------- Extended Data figures (from existing CSVs) -------------
+def ed1():
+    """Estimator-bias calibration (null simulations)."""
+    df = pd.read_csv("p02_gain_bias.csv")
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.1, 2.4))
+    for noise, c in [(0.0, "#7f8c8d"), (0.05, "#2980b9"), (0.15, "#8e44ad")]:
+        s = df[(df.noise == noise) & (df.L == 150) & (df.g_true == 1.0)]
+        ax1.plot(s.sigma_d, s.bias_ratio, "o-", color=c, ms=3.5, lw=1.1,
+                 label=f"noise={noise}")
+        s2 = df[(df.noise == noise) & (df.sigma_d == 0.6) & (df.g_true == 1.0)]
+        ax2.plot(s2.L, s2.bias_ratio, "s-", color=c, ms=3.5, lw=1.1)
+    ax1.axhline(1, color="k", lw=0.7, ls="--")
+    ax1.axvline(0.3, color="k", lw=0.7, ls=":")
+    ax1.set_xscale("log")
+    ax1.set_xlabel("true disturbance amplitude (m s$^{-1}$)", fontsize=7)
+    ax1.set_ylabel("estimated / true gain", fontsize=7)
+    ax1.tick_params(labelsize=7); ax1.legend(fontsize=6)
+    ax2.axhline(1, color="k", lw=0.7, ls="--")
+    ax2.set_xlabel("window length (steps)", fontsize=7)
+    ax2.set_ylabel("estimated / true gain", fontsize=7)
+    ax2.tick_params(labelsize=7)
+    fig.tight_layout()
+    fig.savefig(os.path.join(OUT, "ed1_bias.pdf")); plt.close(fig)
+
+
+def ed2():
+    """Controller validation: chain gain decay (all-human vs all-AV)."""
+    df = pd.read_csv("platoon_probe.csv")   # columns: config, position, gain
+    fig, ax = plt.subplots(figsize=(3.6, 2.5))
+    for cfg, lab, c in [("human", "all human", HC), ("av", "all AV", AVC)]:
+        s = df[df.config == cfg].sort_values("position")
+        ax.plot(s.position, s.gain, "o-", color=c, ms=3.5, lw=1.1, label=lab)
+    ax.axhline(1, color="k", lw=0.7, ls="--")
+    ax.set_xlabel("position in platoon", fontsize=7)
+    ax.set_ylabel("chain fluctuation gain", fontsize=7)
+    ax.tick_params(labelsize=7); ax.legend(fontsize=6)
+    fig.tight_layout()
+    fig.savefig(os.path.join(OUT, "ed2_controller.pdf")); plt.close(fig)
+
+
+def ed3():
+    """Controller-parameter sensitivity of simulated savings."""
+    df = pd.read_csv("p12_sensitivity.csv")
+    base = 41.09
+    g = df.groupby(["n_av", "jerk_cap", "t_close", "T_av"]).e.mean().reset_index()
+    fig, ax = plt.subplots(figsize=(3.6, 2.5))
+    for n_av, lab in [(12, "20%"), (30, "50%"), (60, "100%")]:
+        sub = g[g.n_av == n_av]
+        sav = 100 * (1 - sub.e / base)
+        ax.scatter([lab] * len(sav), sav, color="#5d6d7e", s=12, alpha=0.6)
+        ax.scatter([lab], [sav.median()], color=AVC, s=30, zorder=3)
+    ax.set_xlabel("AV penetration", fontsize=7)
+    ax.set_ylabel("energy saving (%)", fontsize=7)
+    ax.tick_params(labelsize=7)
+    fig.tight_layout()
+    fig.savefig(os.path.join(OUT, "ed3_sensitivity.pdf")); plt.close(fig)
+
+
+def ed4():
+    """Cross-validation: freeway style distributions, three sources."""
+    tk = pd.read_csv("${DATA_DIR}/tracks_full.csv",
+                     usecols=["is_av", "mean_speed", "p95_abs_jerk", "frac_aggr"])
+    ng = pd.read_csv("${DATA_DIR}/ngsim_tracks.csv",
+                     usecols=["mean_speed", "p95_abs_jerk", "frac_aggr"])
+    w_h = tk[(tk.is_av == 0) & (tk.mean_speed > 10)]
+    w_a = tk[(tk.is_av == 1) & (tk.mean_speed > 10)]
+    ng_h = ng[ng.mean_speed > 10]
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.1, 2.4))
+    for s, lab, c in [(w_h, "Human, AV-perceived", HC),
+                      (ng_h, "Human, camera (NGSIM)", NC),
+                      (w_a, "Waymo AV", AVC)]:
+        for ax, m in [(ax1, "p95_abs_jerk"), (ax2, "frac_aggr")]:
+            v = np.sort(s[m].values)
+            ax.plot(v, np.arange(1, v.size + 1) / v.size, color=c, lw=1.1, label=lab)
+    ax1.set_xscale("log")
+    ax1.set_xlabel("95th p. $|jerk|$ (m s$^{-3}$)", fontsize=7)
+    ax2.set_xlabel("aggressive-driving share", fontsize=7)
+    for ax in (ax1, ax2):
+        ax.set_ylabel("ECDF", fontsize=7); ax.tick_params(labelsize=7)
+    ax1.legend(fontsize=6)
+    fig.tight_layout()
+    fig.savefig(os.path.join(OUT, "ed4_validation.pdf")); plt.close(fig)

@@ -120,8 +120,14 @@ def subprocess_netconvert(net, nod, edg):
 
 
 if __name__ == "__main__":
-    for name, av in [("ALL HUMAN", False), ("ALL AV", True)]:
+    import pandas as pd
+    rows = []
+    for name, av, cfg in [("ALL HUMAN", False, "human"), ("ALL AV", True, "av")]:
         g = run_platoon(av_all=av, seed=0)
+        for pos, gain in g.items():
+            rows.append(dict(config=cfg, position=pos, gain=gain))
         gs = " ".join(f"{v:.2f}" for v in list(g.values())[:8])
         print(f"{name}: chain gains {gs}")
         print(f"  cumulative at position 8: {list(g.values())[7]:.3f}")
+    pd.DataFrame(rows).to_csv("platoon_probe.csv", index=False)
+    print("saved platoon_probe.csv")
