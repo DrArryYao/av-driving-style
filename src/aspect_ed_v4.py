@@ -35,7 +35,7 @@ WIDE = lambda ax: ax.set_box_aspect(0.5)
 def ed1():
     """a adaptive (wide heatmap), b/c/d/e square."""
     df = pd.read_csv(os.path.join(HERE, "p02_gain_bias.csv"))
-    fig = plt.figure(figsize=(7.1, 5.5))
+    fig = plt.figure(figsize=(7.1, 4.0))
     gs = gridspec.GridSpec(2, 3, hspace=0.35, wspace=0.50)
 
     # a: wide heatmap
@@ -121,7 +121,7 @@ def ed2():
     energy = pd.read_csv(os.path.join(HERE,"sim_per_vehicle_energy.csv"))
     vehicles = [5,15,25,35,45,55]
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.5))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
     # a: scatter
@@ -205,7 +205,7 @@ def ed3():
     sub50 = df[df.n_av==30]
     jcs = [1.0,1.5,2.0]; Ts = [1.1,1.4,1.7]
 
-    fig = plt.figure(figsize=(7.1, 5.5))
+    fig = plt.figure(figsize=(7.1, 4.0))
     gs = gridspec.GridSpec(2, 3, hspace=0.35, wspace=0.50)
 
     # a: wide heatmap
@@ -286,7 +286,7 @@ def ed4():
     ng_h = ng[ng.mean_speed>10]
     colors = [(w_h,HC,"Human (perc.)"),(ng_h,NC,"NGSIM"),(w_a,AVC,"AV")]
 
-    fig = plt.figure(figsize=(7.1, 5.5))
+    fig = plt.figure(figsize=(7.1, 4.0))
     gs = gridspec.GridSpec(2, 3, hspace=0.35, wspace=0.50)
 
     # a: wide heatmap
