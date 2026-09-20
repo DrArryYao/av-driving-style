@@ -73,11 +73,11 @@ def fig1():
             if not np.isnan(hm[mi,ri]):
                 ax3.text(ri,mi,f"{hm[mi,ri]:.0f}",ha="center",va="center",
                          fontsize=6.5,color="k")
-    # vertical colorbar on right side (thin, tight to avoid panel d overlap)
-    cb = fig.colorbar(im,ax=ax3,fraction=0.025,pad=0.02,orientation="vertical",
-                      shrink=0.8)
-    cb.set_label("AV-human (%)",fontsize=6.5)
-    cb.ax.tick_params(labelsize=6)
+    # thin colorbar with label on top (horizontal) to avoid panel d overlap
+    cb = fig.colorbar(im, ax=ax3, fraction=0.015, pad=0.01,
+                      orientation="vertical", shrink=0.7)
+    cb.ax.set_title("AV-human (%)", fontsize=5.5, pad=3)
+    cb.ax.tick_params(labelsize=5.5)
     ax3.set_xlabel("speed regime (m s$^{-1}$)")
     letter(ax3,"c")
 
