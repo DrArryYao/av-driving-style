@@ -8,8 +8,9 @@ a production automated vehicle (AV) drives relative to the human-driven
 vehicles around it, using the paired structure embedded in the Waymo Open
 Motion Dataset (in every scene, the AV shares identical road, weather and
 traffic conditions with the tracked human vehicles), cross-validated with
-the independently instrumented NGSIM US-101 dataset, plus calibrated
-mixed-traffic simulations.
+the independently instrumented NGSIM US-101 dataset, compared against
+commercial adaptive cruise control (ACC) from the JRC Open ACC Database,
+plus calibrated mixed-traffic simulations.
 
 ## What the pipeline does
 
@@ -27,13 +28,19 @@ mixed-traffic simulations.
    disturbance-conditional analysis.
 5. **Independent human baseline** (`src/ngsim_analysis.py`) — NGSIM
    US-101 processing with identical metric definitions.
-6. **Robustness suite** (`src/p0*.py`, `src/p1*.py`) — estimator-bias
+6. **Commercial ACC baseline** (`src/jrc_acc_analysis.py`) — JRC Open
+   ACC Database processing: parses five-vehicle platoon trajectories,
+   computes fluctuation gains for ACC followers using the same pipeline
+   as WOMD/NGSIM, enabling cross-automation-level comparison
+   (human vs commercial ACC vs L4).
+7. **Robustness suite** (`src/p0*.py`, `src/p1*.py`) — estimator-bias
    null simulations, leader-noise equalization, cluster bootstrap,
    controller-parameter sensitivity sweeps, duration matching.
-7. **Simulations** (`src/platoon_energy.py`, `src/platoon_probe.py`,
+8. **Simulations** (`src/platoon_energy.py`, `src/platoon_probe.py`,
    `src/ring_sim.py`) — controller validation and penetration-sweep
    energy counterfactuals (SUMO optional; platoon model is pure Python).
-8. **Figures** (`figures/make_figures.py`) — all manuscript figures.
+9. **Figures** (`figures/make_figures.py`, `figures/fig2_9panel.py`,
+   `figures/fig1_diverse.py`, etc.) — all manuscript figures.
 
 ## Data requirements (not included)
 
@@ -45,6 +52,11 @@ mixed-traffic simulations.
   passenger-car CSV from the US DOT open data portal
   (`data.transportation.gov`, dataset `8ect-6jqj`) and save as
   `$AVS_DATA_DIR/ngsim_us101_cars.csv`.
+- **JRC Open ACC Database** (public). Download car-following trajectory
+  CSVs from the European Commission JRC open data portal
+  (`data.jrc.ec.europa.eu`, DOI: `10.2905/JRC.KMH3D00`) and save under
+  `$AVS_DATA_DIR/jrc_acc/`. Contains five-vehicle platoon experiments
+  with production ACC systems on Italian roads.
 
 ## Setup
 
@@ -65,13 +77,24 @@ python -m grpc_tools.protoc -Iprotos --python_out=gen protos/waymo_open_dataset/
 
 ```bash
 cd src
-python run_full.py                      # extraction + string stability + paired analysis
-python ngsim_analysis.py $AVS_DATA_DIR/ngsim_us101_cars.csv $AVS_DATA_DIR/ngsim_tracks.csv $AVS_DATA_DIR/ngsim_pairs.csv
+
+# Main analysis (WOMD)
+python run_full.py
+
+# Independent baselines
+python ngsim_analysis.py $AVS_DATA_DIR/ngsim_us101_cars.csv \
+  $AVS_DATA_DIR/ngsim_tracks.csv $AVS_DATA_DIR/ngsim_pairs.csv
+
+python jrc_acc_analysis.py  # outputs jrc_acc_gains.csv
+
+# Robustness suite
 python p02_gain_bias.py                 # estimator-bias calibration
 python p13_cluster_bootstrap.py         # shard-cluster robustness
-python p01_noise_matched.py 300 $AVS_DATA_DIR/p01_pairs.csv   # leader-noise equalization
-python p12_sensitivity.py               # simulation controller grid
-cd ../figures && python make_figures.py # all figures
+python p01_noise_matched.py 300 $AVS_DATA_DIR/p01_pairs.csv
+python p12_sensitivity.py               # controller grid
+
+# Figures
+cd ../figures && python make_figures.py
 ```
 
 ## Repository layout
@@ -86,6 +109,7 @@ docs/       data-acquisition notes
 
 ## License
 
-MIT (code). The underlying datasets are governed by their own licenses
-(Waymo Open Dataset License; NGSIM is public US Department of
-Transportation data).
+MIT (code). The underlying datasets are governed by their own licenses:
+Waymo Open Dataset License; NGSIM is public US Department of
+Transportation data; JRC Open ACC Database is European Commission reuse
+with attribution.
