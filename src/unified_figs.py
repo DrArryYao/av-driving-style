@@ -14,7 +14,7 @@ OUT = r"C:\Users\Arry\Desktop\NC\paper"
 HERE = os.path.dirname(os.path.abspath(__file__))
 AVC, HC, NC = "#D55E00", "#0072B2", "#009E73"
 plt.rcParams.update({
-    "font.size": 7.5, "axes.linewidth": 0.9, "figure.dpi": 200,
+    "font.size": 8.5, "axes.linewidth": 0.9, "figure.dpi": 200,
     "savefig.bbox": "tight", "legend.frameon": False,
     "font.family": "Palatino Linotype",
     "mathtext.fontset": "custom",
@@ -25,8 +25,8 @@ plt.rcParams.update({
     "axes.grid": False,
     "xtick.direction": "out", "ytick.direction": "out",
     "xtick.major.size": 2.5, "ytick.major.size": 2.5,
-    "legend.fontsize": 5.5, "axes.labelsize": 7, "xtick.labelsize": 6,
-    "ytick.labelsize": 6, "lines.linewidth": 1.2,
+    "legend.fontsize": 5.5, "axes.labelsize": 8, "xtick.labelsize": 7,
+    "ytick.labelsize": 7, "lines.linewidth": 1.2,
     "axes.titlesize": 6.5,
 })
 L = lambda ax, s: ax.text(-0.22, 1.12, s, transform=ax.transAxes,
@@ -168,7 +168,7 @@ def fig2():
     strata = [(0.05,0.15),(0.15,0.3),(0.3,0.6),(0.6,3.0)]
     mids = [np.mean(s) for s in strata]
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.5))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
@@ -275,7 +275,7 @@ def fig3():
     energy = pd.read_csv(os.path.join(HERE,"sim_per_vehicle_energy.csv"))
     vehicles = [5,15,25,35,45,55]
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.5))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
@@ -357,7 +357,7 @@ def fig4():
         return out
     med_v = med_ci("vsp_km"); med_e = med_ci("e_km")
 
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.5))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
@@ -459,7 +459,7 @@ def fig4():
 # ================================================================
 def fig5():
     sens = pd.read_csv(os.path.join(HERE,"p12_sensitivity.csv"))
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.0))
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 5.5))
     fig.subplots_adjust(hspace=0.35, wspace=0.50)
     (ax1,ax2,ax3),(ax4,ax5,ax6) = axes
 
