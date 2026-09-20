@@ -51,7 +51,7 @@ def fig1():
     ax2.set_yticks(y_pos); ax2.set_yticklabels(regs,fontsize=7)
     ax2.set_xlabel("median 95th-p. jerk (m s$^{-3}$)")
     ax2.invert_yaxis()
-    ax2.legend(loc="lower left")
+    ax2.legend(loc="upper right")
     letter(ax2,"b")
 
     # c: heatmap
