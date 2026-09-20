@@ -73,9 +73,9 @@ def fig1():
             if not np.isnan(hm[mi,ri]):
                 ax3.text(ri,mi,f"{hm[mi,ri]:.0f}",ha="center",va="center",
                          fontsize=6.5,color="k")
-    # horizontal colorbar below heatmap (avoids overlap with panel d)
-    cb = fig.colorbar(im,ax=ax3,fraction=0.035,pad=0.08,orientation="horizontal",
-                      anchor=(0.5,1.0),shrink=0.6)
+    # vertical colorbar on right side (thin, tight to avoid panel d overlap)
+    cb = fig.colorbar(im,ax=ax3,fraction=0.025,pad=0.02,orientation="vertical",
+                      shrink=0.8)
     cb.set_label("AV-human (%)",fontsize=6.5)
     cb.ax.tick_params(labelsize=6)
     ax3.set_xlabel("speed regime (m s$^{-1}$)")
