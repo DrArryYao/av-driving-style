@@ -3,113 +3,81 @@
 Paired analysis of automated-vehicle driving style versus human driving,
 from open trajectory data.
 
-This repository contains the full analysis pipeline behind a study of how
-a production automated vehicle (AV) drives relative to the human-driven
-vehicles around it, using the paired structure embedded in the Waymo Open
-Motion Dataset (in every scene, the AV shares identical road, weather and
-traffic conditions with the tracked human vehicles), cross-validated with
-the independently instrumented NGSIM US-101 dataset, compared against
-commercial adaptive cruise control (ACC) from the JRC Open ACC Database,
-plus calibrated mixed-traffic simulations.
+This repository contains the **data-processing and figure-generation
+code** for a study of how a production automated vehicle (AV) drives
+relative to the human-driven vehicles around it, using the paired
+structure embedded in the Waymo Open Motion Dataset (in every scene, the
+AV shares identical road, weather and traffic conditions with the tracked
+human vehicles), cross-validated with the independently instrumented
+NGSIM US-101 dataset and compared against commercial adaptive cruise
+control (ACC) from the JRC Open ACC Database.
+
+## Repository layout
+
+```
+data_processing/    Core pipeline: WOMD parsing -> kinematics/style
+                    extraction -> paired statistics -> string-stability
+                    analysis -> NGSIM baseline -> JRC ACC baseline
+figure_generation/  Manuscript figure scripts (matplotlib), the
+                    source-data Excel export, and fix_figures.py
+                    (vector-level axis-label/legend/legend revisions
+                    applied to the final figure PDFs; its paths refer to
+                    the authors' local paper work package)
+protos/             Waymo Open Dataset Scenario .proto definitions
+gen/                Pre-compiled protobuf modules (import path used by
+                    the parsing scripts)
+```
 
 ## What the pipeline does
 
-1. **Parsing** (`src/womd_parsing.py`) — pure-Python TFRecord reader and
-   Waymo `Scenario` protobuf parsing (no TensorFlow required).
-2. **Style extraction** (`src/extract_kinematics.py`) — per-vehicle
-   kinematics (speed, acceleration, jerk), style metrics, VSP operating
-   modes, and physical wheel-energy integrals for ~965,000 vehicle
-   episodes.
-3. **Paired statistics** (`src/analyze_pilot.py`) — within-scene paired
-   contrasts of the AV against same-scene human vehicles, bootstrap CIs,
-   speed-regime stratification.
-4. **String stability** (`src/string_stability.py`) — geometric
-   leader–follower identification, fluctuation-gain estimation,
-   disturbance-conditional analysis.
-5. **Independent human baseline** (`src/ngsim_analysis.py`) — NGSIM
-   US-101 processing with identical metric definitions.
-6. **Commercial ACC baseline** (`src/jrc_acc_analysis.py`) — JRC Open
-   ACC Database processing: parses five-vehicle platoon trajectories,
-   computes fluctuation gains for ACC followers using the same pipeline
-   as WOMD/NGSIM, enabling cross-automation-level comparison
-   (human vs commercial ACC vs L4).
-7. **Robustness suite** (`src/p0*.py`, `src/p1*.py`) — estimator-bias
-   null simulations, leader-noise equalization, cluster bootstrap,
-   controller-parameter sensitivity sweeps, duration matching.
-8. **Simulations** (`src/platoon_energy.py`, `src/platoon_probe.py`,
-   `src/ring_sim.py`) — controller validation and penetration-sweep
-   energy counterfactuals (SUMO optional; platoon model is pure Python).
-9. **Figures** (`figures/make_figures.py`, `figures/fig2_9panel.py`,
-   `figures/fig1_diverse.py`, etc.) — all manuscript figures.
+1. **Parsing** (`data_processing/womd_parsing.py`) — pure-Python
+   TFRecord reader and Waymo `Scenario` protobuf parsing (no TensorFlow
+   required).
+2. **Style extraction** (`data_processing/extract_kinematics.py`) —
+   per-vehicle kinematics (speed, acceleration, jerk), style metrics,
+   VSP operating modes, and physical wheel-energy integrals for
+   ~965,000 vehicle episodes.
+3. **Paired statistics** (`data_processing/analyze_pilot.py`) —
+   within-scene paired contrasts of the AV against same-scene human
+   vehicles, bootstrap CIs, speed-regime stratification.
+4. **String stability** (`data_processing/string_stability.py`) —
+   geometric leader–follower identification, fluctuation-gain
+   estimation, disturbance-conditional analysis.
+5. **Independent human baseline** (`data_processing/ngsim_analysis.py`)
+   — NGSIM US-101 processing with identical metric definitions.
+6. **Commercial ACC baseline** (`data_processing/jrc_acc_analysis.py`)
+   — JRC Open ACC Database processing: parses five-vehicle platoon
+   trajectories and computes fluctuation gains for ACC followers using
+   the same pipeline as WOMD/NGSIM, enabling cross-automation-level
+   comparison (human vs commercial ACC vs L4).
+7. **Figures and source data** (`figure_generation/`) — all manuscript
+   figures and the figure source-data workbook
+   (`export_excel.py`, sheets named by manuscript figure number).
 
 ## Data requirements (not included)
 
 - **Waymo Open Motion Dataset v1.3** (20-second training scenarios).
   Obtain from the official source under the Waymo Open Dataset License
-  (registration required). Place the 930 uncompressed `.tfrecord` shards
-  under `$AVS_DATA_DIR/tfrecords/`.
-- **NGSIM US-101 vehicle trajectories** (public). Download the
-  passenger-car CSV from the US DOT open data portal
-  (`data.transportation.gov`, dataset `8ect-6jqj`) and save as
-  `$AVS_DATA_DIR/ngsim_us101_cars.csv`.
-- **JRC Open ACC Database** (public). Download car-following trajectory
-  CSVs from the European Commission JRC open data portal
-  (`data.jrc.ec.europa.eu`, DOI: `10.2905/JRC.KMH3D00`) and save under
-  `$AVS_DATA_DIR/jrc_acc/`. Contains five-vehicle platoon experiments
-  with production ACC systems on Italian roads.
+  (registration required). Place the 930 uncompressed `.tfrecord`
+  shards under `$AVS_DATA_DIR/tfrecords/`.
+- **NGSIM US-101** trajectory data (public domain, US FHWA).
+- **JRC Open ACC Database** (European Commission Joint Research Centre,
+  DOI 10.2905/JRC.KMH3D00).
 
-## Setup
+## Reproduce
 
 ```bash
 pip install -r requirements.txt
-export AVS_DATA_DIR=/path/to/data      # default ./data
-export OUT_DIR=/path/to/outputs        # default ./out
+export PYTHONPATH="$(pwd)/gen:$PYTHONPATH"   # compiled Scenario protos
+python data_processing/run_full.py           # full pipeline -> results
+python figure_generation/unified_figs.py     # manuscript figures
+python figure_generation/export_excel.py     # figure source-data workbook
 ```
 
-Protocol-buffer modules are bundled in `gen/`; to regenerate them from
-`protos/` run:
-
-```bash
-python -m grpc_tools.protoc -Iprotos --python_out=gen protos/waymo_open_dataset/protos/scenario.proto
-```
-
-## Reproducing the analysis
-
-```bash
-cd src
-
-# Main analysis (WOMD)
-python run_full.py
-
-# Independent baselines
-python ngsim_analysis.py $AVS_DATA_DIR/ngsim_us101_cars.csv \
-  $AVS_DATA_DIR/ngsim_tracks.csv $AVS_DATA_DIR/ngsim_pairs.csv
-
-python jrc_acc_analysis.py  # outputs jrc_acc_gains.csv
-
-# Robustness suite
-python p02_gain_bias.py                 # estimator-bias calibration
-python p13_cluster_bootstrap.py         # shard-cluster robustness
-python p01_noise_matched.py 300 $AVS_DATA_DIR/p01_pairs.csv
-python p12_sensitivity.py               # controller grid
-
-# Figures
-cd ../figures && python make_figures.py
-```
-
-## Repository layout
-
-```
-src/        analysis pipeline (see list above)
-figures/    figure-generation scripts
-protos/     Waymo Scenario .proto definitions
-gen/        compiled protobuf modules
-docs/       data-acquisition notes
-```
+Paths to the datasets and output directories are configured at the top
+of the scripts.
 
 ## License
 
-MIT (code). The underlying datasets are governed by their own licenses:
-Waymo Open Dataset License; NGSIM is public US Department of
-Transportation data; JRC Open ACC Database is European Commission reuse
-with attribution.
+MIT (see LICENSE). The underlying datasets are governed by their own
+licenses.

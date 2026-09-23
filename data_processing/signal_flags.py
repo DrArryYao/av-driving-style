@@ -10,8 +10,8 @@ import pandas as pd
 
 from womd_parsing import iter_scenarios
 
-out = sys.argv[1] if len(sys.argv) > 1 else "${DATA_DIR}/signal_flags.csv"
-files = sorted(glob.glob("${DATA_DIR}/tfrecords/*"))
+out = sys.argv[1] if len(sys.argv) > 1 else "E:/av_style_data/signal_flags.csv"
+files = sorted(glob.glob("E:/av_style_data/tfrecords/*"))
 
 rows = []
 for path in files:

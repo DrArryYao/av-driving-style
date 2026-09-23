@@ -222,7 +222,7 @@ def main():
     # Fig2i: ACC gain vs speed
     jrc[["mean_speed", "gain"]].to_excel(writer, sheet_name="Fig2i_ACC_speed", index=False)
 
-    # ====== Fig 3 (simulation) sheets ======
+    # ====== Fig 4 (simulation) sheets ======
     sim = pd.read_csv(os.path.join(HERE, "platoon_results.csv"))
     sim_g = sim.groupby("n_av").agg(e=("e_pos_kWh_100km", "mean"),
                                     sd=("e_pos_kWh_100km", "std"),
@@ -232,7 +232,7 @@ def main():
     sim_g["p"] = 100 * sim_g.n_av / 60
     sim_g["saving_pct"] = 100 * (1 - sim_g.e / sim_g.e.iloc[0])
     sim_g[["p", "saving_pct", "vmean", "vstd", "stops"]].to_excel(
-        writer, sheet_name="Fig3a_savings", index=False)
+        writer, sheet_name="Fig4a_savings", index=False)
 
     traces = pd.read_csv(os.path.join(HERE, "sim_speed_traces.csv"))
     for pen in [0, 50]:
@@ -241,9 +241,9 @@ def main():
             sub = tr[tr.veh == vi]
             if len(sub) > 0:
                 pd.DataFrame({"t": sub.t.values[::5], "v": sub.v.values[::5]}
-                             ).to_excel(writer, sheet_name=f"Fig3{'bc'}_trace_p{pen}_v{vi}", index=False)
+                             ).to_excel(writer, sheet_name=f"Fig4{'bc'}_trace_p{pen}_v{vi}", index=False)
 
-    # ====== Fig 4 (energy) sheets ======
+    # ====== Fig 3 (energy) sheets ======
     def med_ci(col):
         out = {}
         for r in regs:
@@ -272,7 +272,7 @@ def main():
                          wheel_change_pct=round(100 * (med_e[(r, 1)][0] / med_e[(r, 0)][0] - 1)),
                          wheel_sedan_saving=round(100 * (med_e[(r, 1)][0] / med_e[(r, 0)][0] - 1)),
                          wheel_minivan_saving=round(100 * (med_e2[(r, 1)] / med_e2[(r, 0)] - 1))))
-    pd.DataFrame(rows).to_excel(writer, sheet_name="Fig4_energy", index=False)
+    pd.DataFrame(rows).to_excel(writer, sheet_name="Fig3_energy", index=False)
 
     # ====== Fig 5 (robustness) sheets ======
     robust = pd.read_csv(os.path.join(HERE, "p12_sensitivity.csv"))

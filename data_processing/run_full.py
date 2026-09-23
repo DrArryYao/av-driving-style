@@ -4,23 +4,23 @@ and the paired analysis sequentially."""
 import glob
 import sys
 
-sys.path.insert(0, r"${CODE_DIR}")
+sys.path.insert(0, r"C:\Users\Arry\Desktop\NC\av_style_pilot\code")
 import os
-os.chdir(r"${CODE_DIR}")
+os.chdir(r"C:\Users\Arry\Desktop\NC\av_style_pilot\code")
 
-files = sorted(glob.glob(r"${DATA_DIR}/tfrecords/*"))
+files = sorted(glob.glob(r"E:/av_style_data/tfrecords/*"))
 print(f"found {len(files)} tfrecord files", flush=True)
 
 import extract_kinematics
-sys.argv = ["extract", r"${DATA_DIR}/tracks_full.csv"] + files
+sys.argv = ["extract", r"E:/av_style_data/tracks_full.csv"] + files
 extract_kinematics.main()
 
 import string_stability
-sys.argv = ["string", r"${DATA_DIR}/pairs_full.csv"] + files
+sys.argv = ["string", r"E:/av_style_data/pairs_full.csv"] + files
 string_stability.main()
 
 import analyze_pilot
-sys.argv = ["analyze", r"${DATA_DIR}/tracks_full.csv", r"${DATA_DIR}/results_full"]
+sys.argv = ["analyze", r"E:/av_style_data/tracks_full.csv", r"E:/av_style_data/results_full"]
 analyze_pilot.main()
 
 print("FULL_RUN_DONE", flush=True)
